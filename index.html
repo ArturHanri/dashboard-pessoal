@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Pessoal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="dashboard-shell">
+      <aside class="sidebar">
+        <div class="profile">
+          <div class="avatar-wrap">
+            <img src="assets/profile.jpg" alt="Jason" />
+            <span></span>
+          </div>
+          <div>
+            <h3>Jason</h3>
+            <p>Foco. Disciplina. Evolução.</p>
+          </div>
+        </div>
+
+        <nav class="menu" aria-label="Navegação principal">
+          <a class="active" href="#" data-view="dashboard"
+            ><i data-lucide="home"></i>Dashboard</a
+          >
+          <a href="#" data-view="hoje"
+            ><i data-lucide="calendar-days"></i>Hoje</a
+          >
+          <a href="#" data-view="academia"
+            ><i data-lucide="dumbbell"></i>Academia</a
+          >
+          <a href="#" data-view="corrida"
+            ><i data-lucide="person-standing"></i>Corrida</a
+          >
+          <a href="#" data-view="dieta"
+            ><i data-lucide="shopping-basket"></i>Dieta</a
+          >
+          <a href="#" data-view="habitos"
+            ><i data-lucide="sparkles"></i>Hábitos</a
+          >
+          <a href="#" data-view="evolucao"
+            ><i data-lucide="chart-no-axes-combined"></i>Evolução</a
+          >
+          <a href="#" data-view="relatorios"
+            ><i data-lucide="file-bar-chart"></i>Relatórios</a
+          >
+          <a href="#" data-view="metas"><i data-lucide="gauge"></i>Metas</a>
+          <a href="#" data-view="anotacoes"
+            ><i data-lucide="notebook-pen"></i>Anotações</a
+          >
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+
+        <section class="quote-box">
+          <strong>Disciplina hoje,<br />liberdade amanhã.</strong>
+          <span>Mantenha o foco!</span>
+        </section>
+
+        <section class="streak-card">
+          <span>Sequência atual</span>
+          <strong>12 <small>dias</small></strong>
+          <svg viewBox="0 0 160 58" aria-hidden="true">
+            <path
+              class="area"
+              d="M6 48 L26 36 L46 38 L66 28 L86 34 L106 30 L126 18 L154 5 L154 58 L6 58 Z"
+            />
+            <path
+              class="line"
+              d="M6 48 L26 36 L46 38 L66 28 L86 34 L106 30 L126 18 L154 5"
+            />
+            <g class="dots">
+              <circle cx="26" cy="36" r="3" />
+              <circle cx="66" cy="28" r="3" />
+              <circle cx="106" cy="30" r="3" />
+              <circle cx="154" cy="5" r="3" />
+            </g>
+          </svg>
+        </section>
+
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-label="Alternar modo escuro"
+        >
+          <span><i data-lucide="moon"></i>Modo escuro</span>
+          <b></b>
+        </button>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <h1>Boa noite, Jason! <span>👋</span></h1>
+            <p>Vamos continuar evoluindo hoje.</p>
+          </div>
+
+          <div class="top-actions">
+            <button type="button" aria-label="Pesquisar">
+              <i data-lucide="search"></i>
+            </button>
+            <button class="bell" type="button" aria-label="Notificações">
+              <i data-lucide="bell"></i>
+            </button>
+            <button class="date-btn" type="button">
+              <i data-lucide="calendar-days"></i>
+              Hoje
+              <i data-lucide="chevron-down"></i>
+            </button>
+          </div>
+        </header>
+
+        <section class="stats-grid" aria-label="Resumo semanal">
+          <article class="stat-card">
+            <div class="stat-icon"><i data-lucide="dumbbell"></i></div>
+            <span>Treinos</span>
+            <strong>18</strong>
+            <small>esta semana</small>
+            <svg class="sparkline" viewBox="0 0 170 48" aria-hidden="true">
+              <path
+                d="M4 40 C20 36 30 30 48 27 S70 32 86 22 S110 18 126 25 S150 30 166 19"
+              />
+              <g>
+                <circle cx="66" cy="28" r="2.6" />
+                <circle cx="116" cy="24" r="2.6" />
+                <circle cx="145" cy="27" r="2.6" />
+              </g>
+            </svg>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon"><i data-lucide="person-standing"></i></div>
+            <span>Corrida</span>
+            <strong>42.6 km</strong>
+            <small>esta semana</small>
+            <svg class="sparkline" viewBox="0 0 170 48" aria-hidden="true">
+              <path
+                d="M4 39 C18 34 30 32 44 27 S66 31 82 22 S100 19 116 26 S144 31 166 21"
+              />
+              <g>
+                <circle cx="66" cy="28" r="2.6" />
+                <circle cx="88" cy="22" r="2.6" />
+                <circle cx="145" cy="28" r="2.6" />
+              </g>
+            </svg>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon"><i data-lucide="scale"></i></div>
+            <span>Peso atual</span>
+            <strong>76.4 kg</strong>
+            <small>-0.6 kg esta sem.</small>
+            <svg class="sparkline down" viewBox="0 0 170 48" aria-hidden="true">
+              <path
+                d="M4 13 C22 16 34 10 50 18 S70 14 86 25 S108 31 126 31 S148 37 166 34"
+              />
+              <g>
+                <circle cx="4" cy="13" r="2.6" />
+                <circle cx="56" cy="18" r="2.6" />
+              </g>
+            </svg>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon"><i data-lucide="person-standing"></i></div>
+            <span>% Gordura</span>
+            <strong>14.2%</strong>
+            <small>-0.8% esta sem.</small>
+            <svg class="sparkline" viewBox="0 0 170 48" aria-hidden="true">
+              <path
+                d="M4 18 C20 20 30 31 46 24 S68 12 86 17 S108 24 124 31 S148 36 166 26"
+              />
+              <g><circle cx="86" cy="17" r="2.6" /></g>
+            </svg>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <article class="card workout-card">
+            <div class="card-title">
+              <h2>Treino de hoje <span>Push</span></h2>
+              <button type="button" aria-label="Mais opções">
+                <i data-lucide="more-vertical"></i>
+              </button>
+            </div>
+            <div class="exercise-list">
+              <div class="exercise-row">
+                <div class="exercise-img"><i data-lucide="dumbbell"></i></div>
+                <div>
+                  <strong>Supino Reto</strong>
+                  <p>4 séries x 8-10 reps</p>
+                </div>
+                <span>60 kg</span>
+              </div>
+              <div class="exercise-row">
+                <div class="exercise-img"><i data-lucide="dumbbell"></i></div>
+                <div>
+                  <strong>Desenvolvimento</strong>
+                  <p>3 séries x 8-10 reps</p>
+                </div>
+                <span>28 kg</span>
+              </div>
+              <div class="exercise-row">
+                <div class="exercise-img"><i data-lucide="activity"></i></div>
+                <div>
+                  <strong>Elevação Lateral</strong>
+                  <p>3 séries x 12-15 reps</p>
+                </div>
+                <span>10 kg</span>
+              </div>
+              <div class="exercise-row">
+                <div class="exercise-img"><i data-lucide="dumbbell"></i></div>
+                <div>
+                  <strong>Tríceps Pulley</strong>
+                  <p>3 séries x 12-15 reps</p>
+                </div>
+                <span>25 kg</span>
+              </div>
+            </div>
+            <button class="start-btn" type="button">
+              <i data-lucide="play"></i>Iniciar treino
+            </button>
+          </article>
+
+          <article class="card habits-card">
+            <div class="card-title">
+              <h2>Hábitos</h2>
+              <button class="text-btn" type="button">Editar</button>
+            </div>
+            <div class="habit-table">
+              <span></span><span>S</span><span>T</span><span>Q</span
+              ><span>S</span><span>S</span><span>D</span>
+              <p><i data-lucide="dumbbell"></i>Treinar</p>
+              <b></b><b></b><b></b><b class="off"></b><b class="off"></b><b></b>
+              <p><i data-lucide="person-standing"></i>Correr</p>
+              <b></b><b></b><b></b><b></b><b></b><b></b>
+              <p><i data-lucide="droplet"></i>Beber água</p>
+              <b></b><b></b><b></b><b></b><b></b><b></b>
+              <p><i data-lucide="moon"></i>Dormir cedo</p>
+              <b class="off"></b><b></b><b></b><b></b><b></b><b class="off"></b>
+              <p><i data-lucide="book-open"></i>Ler</p>
+              <b class="off"></b><b></b><b></b><b class="off"></b
+              ><b class="off"></b><b class="off"></b>
+            </div>
+            <div class="habit-summary">
+              <span>4 de 5 hábitos concluídos</span>
+              <strong>80%</strong>
+            </div>
+            <div class="progress-track"><span style="width: 80%"></span></div>
+          </article>
+
+          <article class="card progress-card">
+            <div class="card-title">
+              <h2>Progresso</h2>
+              <button class="filter-btn" type="button">
+                Peso (kg)<i data-lucide="chevron-down"></i>
+              </button>
+            </div>
+            <div class="metric-line">
+              <strong>76.4</strong> kg <span>-0.6 kg</span>
+            </div>
+            <div class="chart-shell line-chart">
+              <svg viewBox="0 0 330 165" aria-hidden="true">
+                <g class="grid-lines">
+                  <path d="M34 20 H320 M34 56 H320 M34 92 H320 M34 128 H320" />
+                </g>
+                <g class="axis">
+                  <text x="4" y="24">80</text>
+                  <text x="4" y="60">78</text>
+                  <text x="4" y="96">76</text>
+                  <text x="4" y="132">74</text>
+                  <text x="4" y="160">72</text>
+                </g>
+                <path
+                  class="chart-area"
+                  d="M38 34 C54 42 54 70 76 68 S102 54 122 68 S150 98 176 78 S202 76 224 84 S246 106 268 112 S296 104 320 93 L320 165 L38 165 Z"
+                />
+                <path
+                  class="chart-line"
+                  d="M38 34 C54 42 54 70 76 68 S102 54 122 68 S150 98 176 78 S202 76 224 84 S246 106 268 112 S296 104 320 93"
+                />
+                <g class="chart-dots">
+                  <circle cx="38" cy="34" r="3" />
+                  <circle cx="122" cy="68" r="3" />
+                  <circle cx="224" cy="84" r="3" />
+                  <circle cx="268" cy="112" r="3" />
+                  <circle cx="320" cy="93" r="3" />
+                </g>
+              </svg>
+              <div class="x-axis">
+                <span></span><span></span><span></span><span></span
+                ><span></span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card run-card">
+            <div class="card-title">
+              <h2>Corrida</h2>
+              <button class="filter-btn" type="button">
+                Esta semana<i data-lucide="chevron-down"></i>
+              </button>
+            </div>
+            <div class="metric-line">
+              <strong>42.6</strong> km <span>+8.2 km</span>
+            </div>
+            <div class="bar-chart">
+              <span style="height: 46%"><em>Seg</em></span>
+              <span style="height: 64%"><em>Ter</em></span>
+              <span style="height: 34%"><em>Qua</em></span>
+              <span style="height: 52%"><em>Qui</em></span>
+              <span style="height: 90%"><em>Sáb</em></span>
+              <span class="empty" style="height: 18%"><em>Dom</em></span>
+            </div>
+          </article>
+
+          <article class="card nutrition-card">
+            <div class="card-title">
+              <h2>Nutrição</h2>
+              <button class="text-btn" type="button">Ver detalhes</button>
+            </div>
+            <div class="nutrition-body">
+              <div class="donut"></div>
+              <div class="calories">
+                <strong>2,350</strong><span>kcal</span>
+                <p>de 2,800</p>
+              </div>
+            </div>
+            <div class="macro-list">
+              <p><i></i>Carboidratos <span>45%</span></p>
+              <p><i></i>Proteínas <span>30%</span></p>
+              <p><i></i>Gorduras <span>25%</span></p>
+            </div>
+          </article>
+
+          <article class="card calendar-card">
+            <div class="card-title">
+              <h2>Calendário</h2>
+              <div class="month-control">
+                <strong></strong
+                ><button
+                  class="calendar-prev"
+                  type="button"
+                  aria-label="Mês anterior"
+                >
+                  <i data-lucide="chevron-left"></i></button
+                ><button
+                  class="calendar-next"
+                  type="button"
+                  aria-label="Próximo mês"
+                >
+                  <i data-lucide="chevron-right"></i>
+                </button>
+              </div>
+            </div>
+            <div class="calendar-grid">
+              <span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span
+              ><span>Sex</span><span>Sáb</span><span>Dom</span> <em>26</em
+              ><em>27</em><em>28</em><em>29</em><em>30</em><em>31</em><b>1</b>
+              <b>2</b><b>3</b><b class="done">4</b><b class="done">5</b
+              ><b class="done">6</b><b class="done">7</b><b>8</b> <b>9</b
+              ><b class="done">10</b><b class="done">11</b><b>12</b
+              ><b class="done">13</b><b class="done">14</b><b>15</b>
+              <b class="done">16</b><b class="done">17</b><b>18</b><b>19</b
+              ><b class="done">20</b><b>21</b><b>22</b> <b class="done">23</b
+              ><b class="done">24</b><b>25</b><b>26</b><b>27</b><b>28</b
+              ><b>29</b>
+            </div>
+          </article>
+
+          <article class="card next-card">
+            <div class="card-title">
+              <h2>Próximo treino <span>Pull</span></h2>
+              <button class="date-chip" type="button">
+                <i data-lucide="calendar-days"></i>Próximo<i
+                  data-lucide="chevron-down"
+                ></i>
+              </button>
+            </div>
+            <div class="exercise-list compact">
+              <div class="exercise-row">
+                <div class="exercise-img"><i data-lucide="dumbbell"></i></div>
+                <div>
+                  <strong>Levantamento Terra</strong>
+                  <p>4 séries x 5 reps</p>
+                </div>
+              </div>
+              <div class="exercise-row">
+                <div class="exercise-img"><i data-lucide="dumbbell"></i></div>
+                <div>
+                  <strong>Remada Curvada</strong>
+                  <p>4 séries x 8-10 reps</p>
+                </div>
+              </div>
+              <div class="exercise-row">
+                <div class="exercise-img"><i data-lucide="dumbbell"></i></div>
+                <div>
+                  <strong>Puxada Alta</strong>
+                  <p>3 séries x 10-12 reps</p>
+                </div>
+              </div>
+              <div class="exercise-row">
+                <div class="exercise-img"><i data-lucide="dumbbell"></i></div>
+                <div>
+                  <strong>Rosca Direta</strong>
+                  <p>3 séries x 12-15 reps</p>
+                </div>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="bottom-widgets" aria-label="Indicadores do dia">
+          <article class="mini-widget">
+            <i data-lucide="moon"></i>
+            <div>
+              <span>Sono</span><strong>7h 32m</strong
+              ><small>Qualidade: 85%</small>
+            </div>
+            <svg viewBox="0 0 72 30">
+              <path d="M2 21 C10 6 18 14 26 10 S40 25 48 14 S62 22 70 5" />
+            </svg>
+          </article>
+          <article class="mini-widget ring-widget">
+            <i data-lucide="droplet"></i>
+            <div>
+              <span>Água</span><strong>2.4 L</strong><small>de 3.0 L</small>
+            </div>
+            <b>›</b>
+          </article>
+          <article class="mini-widget ring-widget">
+            <i data-lucide="footprints"></i>
+            <div>
+              <span>Passos</span><strong>8,642</strong><small>de 10,000</small>
+            </div>
+            <b>›</b>
+          </article>
+          <article class="mini-widget">
+            <i data-lucide="heart"></i>
+            <div>
+              <span>Freq. Card.</span><strong>62 bpm</strong
+              ><small>Repouso</small>
+            </div>
+            <svg viewBox="0 0 72 30">
+              <path d="M2 20 C12 14 20 18 28 13 S42 8 50 15 S62 18 70 11" />
+            </svg>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
