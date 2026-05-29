@@ -250,8 +250,6 @@ const defaultState = {
 // Objeto central que guarda tudo que precisa persistir no Dashboard.
 let dashboardData = loadData();
 let state = dashboardData;
-normalizeHabits();
-normalizeCalendarDay();
 let currentView = state.settings.currentView || "dashboard";
 let navigateToView = () => {};
 let visibleCalendarDate = dateFromKey(
@@ -263,6 +261,8 @@ let selectedCalendarDate = dateFromKey(
 let miniCalendarDate = dateFromKey(
   state.settings.miniCalendarDate || getTodayKey(),
 );
+normalizeHabits();
+normalizeCalendarDay();
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -1622,21 +1622,44 @@ function setupInlineProfile() {
   const name = document.querySelector(".profile h3");
   const tagline = document.querySelector(".profile p");
   if (!name || !tagline) return;
+  let profileSaveTimer;
 
   name.contentEditable = "true";
   tagline.contentEditable = "true";
 
-  name.addEventListener("blur", () => {
+  const persistProfile = (renderAfterSave = false) => {
     state.profile.name = name.textContent.trim() || defaultState.profile.name;
-    saveState();
-    renderDashboard();
-  });
-
-  tagline.addEventListener("blur", () => {
     state.profile.tagline =
       tagline.textContent.trim() || defaultState.profile.tagline;
-    saveState();
-    renderDashboard();
+    saveData();
+
+    if (currentView === "dashboard") {
+      setText(".topbar h1", dashboardGreeting());
+    }
+
+    if (renderAfterSave) {
+      renderDashboard();
+    }
+  };
+
+  const scheduleProfileSave = () => {
+    clearTimeout(profileSaveTimer);
+    profileSaveTimer = setTimeout(() => persistProfile(false), 250);
+  };
+
+  [name, tagline].forEach((field) => {
+    field.addEventListener("input", scheduleProfileSave);
+    field.addEventListener("blur", () => persistProfile(true));
+    field.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        field.blur();
+      }
+    });
+  });
+
+  window.addEventListener("beforeunload", () => {
+    persistProfile(false);
   });
 }
 
