@@ -613,14 +613,12 @@ button,
 
 .sparkline .spark-dot {
   fill: var(--green);
-  stroke: #121820;
-  stroke-width: 1.5;
+  stroke: none;
 }
 
 .sparkline .spark-last {
   fill: #8af2a5;
-  stroke: rgba(9, 14, 20, 0.9);
-  stroke-width: 2;
+  stroke: none;
 }
 
 .content-grid {

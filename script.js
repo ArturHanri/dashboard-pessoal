@@ -355,9 +355,20 @@ function clearHabitDay(dayIndex) {
   });
 }
 
+function syncActiveDayWithToday() {
+  const todayName = getTodayName();
+  if (state.activeDay !== todayName) {
+    state.activeDay = todayName;
+    ensureDiet(state.activeDay);
+    return true;
+  }
+  return false;
+}
+
 function normalizeCalendarDay() {
   const todayKey = getTodayKey();
   state.habitStreak = state.habitStreak || { count: 0, lastDate: todayKey };
+  const activeDayChanged = syncActiveDayWithToday();
 
   if (state.lastCalendarDate !== todayKey) {
     const previousKey = state.lastCalendarDate || state.habitStreak.lastDate;
@@ -372,9 +383,11 @@ function normalizeCalendarDay() {
       clearHabitDay(dayIndexFromDate(new Date()));
     }
 
-    state.activeDay = getTodayName();
     state.lastCalendarDate = todayKey;
     state.habitStreak.lastDate = todayKey;
+    syncDashboardSettings();
+    saveData();
+  } else if (activeDayChanged) {
     syncDashboardSettings();
     saveData();
   }
@@ -871,6 +884,9 @@ function renderProfile() {
 }
 
 function renderDashboard() {
+  if (syncActiveDayWithToday()) {
+    saveData();
+  }
   renderProfile();
 
   if (currentView === "dashboard") {
@@ -1095,8 +1111,6 @@ function setupDashboardInteractions() {
     day.onclick = (event) => {
       event.stopPropagation();
       selectedCalendarDate = new Date(`${day.dataset.date}T12:00:00`);
-      state.activeDay = dayNames[(selectedCalendarDate.getDay() + 6) % 7];
-      ensureDiet(state.activeDay);
       saveState();
       renderDashboard();
     };
@@ -1129,8 +1143,6 @@ function bindMiniCalendarEvents() {
       selectedCalendarDate = new Date(`${dayButton.dataset.date}T12:00:00`);
       miniCalendarDate = new Date(selectedCalendarDate);
       visibleCalendarDate = new Date(selectedCalendarDate);
-      state.activeDay = dayNames[(selectedCalendarDate.getDay() + 6) % 7];
-      ensureDiet(state.activeDay);
       saveState();
       renderDashboard();
       renderMiniCalendar();
@@ -1236,6 +1248,7 @@ function textAreaField(label, value, attrs) {
 }
 
 function renderHoje() {
+  syncActiveDayWithToday();
   const workout = byDay(state.workouts);
   const run = byDay(state.runs);
   const diet = ensureDiet(state.activeDay);
@@ -1244,7 +1257,7 @@ function renderHoje() {
       <article class="card module-card full">
         <div class="card-title"><h2>Dia ativo no Dashboard</h2></div>
         <div class="editor-grid">
-          ${customDaySelect("Dia")}
+          <div class="module-kpi"><span>Dia automático</span><strong>${state.activeDay}</strong></div>
           <div class="module-kpi"><span>Treino</span><strong>${workout.split}</strong></div>
           <div class="module-kpi"><span>Corrida</span><strong>${run.distance} km</strong></div>
           <div class="module-kpi"><span>Dieta</span><strong>${Number(diet.calories).toLocaleString("en-US")}</strong></div>
@@ -1754,7 +1767,10 @@ function setupViews() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  document.body.classList.toggle("light-mode", Boolean(state.settings.lightMode));
+  document.body.classList.toggle(
+    "light-mode",
+    Boolean(state.settings.lightMode),
+  );
   renderIcons();
   setupTopDatePicker();
   setupThemeToggle();
