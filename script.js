@@ -261,6 +261,7 @@ let selectedCalendarDate = dateFromKey(
 let miniCalendarDate = dateFromKey(
   state.settings.miniCalendarDate || getTodayKey(),
 );
+let academyEditDay = state.settings.academyEditDay || state.activeDay || getTodayName();
 normalizeHabits();
 normalizeCalendarDay();
 
@@ -443,6 +444,7 @@ function syncDashboardSettings() {
     selectedCalendarDate: dateKey(selectedCalendarDate),
     visibleCalendarDate: dateKey(visibleCalendarDate),
     miniCalendarDate: dateKey(miniCalendarDate),
+    academyEditDay,
   };
 }
 
@@ -467,6 +469,7 @@ function resetDashboard() {
   selectedCalendarDate = dateFromKey(state.settings.selectedCalendarDate);
   visibleCalendarDate = dateFromKey(state.settings.visibleCalendarDate);
   miniCalendarDate = dateFromKey(state.settings.miniCalendarDate);
+  academyEditDay = state.settings.academyEditDay || state.activeDay;
   document.body.classList.toggle("light-mode", state.settings.lightMode);
   saveData();
   updateDashboard();
@@ -489,6 +492,10 @@ function moneylessNumber(value, fallback = 0) {
 
 function byDay(collection, day = state.activeDay) {
   return collection.find((item) => item.day === day) || collection[0];
+}
+
+function dayNameFromDate(date) {
+  return dayNames[dayIndexFromDate(date)];
 }
 
 function nextDay(day) {
@@ -635,6 +642,57 @@ function ensureDiet(day) {
     state.diets.push(diet);
   }
   return diet;
+}
+
+function calendarPreviewHTML(date = selectedCalendarDate) {
+  const day = dayNameFromDate(date);
+  const workout = byDay(state.workouts, day);
+  const run = byDay(state.runs, day);
+  const diet = ensureDiet(day);
+  const plannedHabits = state.habits.map((habit) => habit.name).filter(Boolean);
+  const hasWorkout = workout?.exercises?.length;
+  const hasRun = moneylessNumber(run?.distance) > 0;
+  const hasDiet = diet?.meals?.length;
+  const hasHabits = plannedHabits.length;
+
+  if (!hasWorkout && !hasRun && !hasDiet && !hasHabits) {
+    return `
+      <div class="calendar-preview empty-state">
+        <i data-lucide="calendar-x"></i>
+        <div>
+          <strong>Nada planejado</strong>
+          <p>Sem treino, corrida, dieta ou hábitos para ${day}.</p>
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="calendar-preview">
+      <div class="preview-head">
+        <span>${formatShortDate(date)}</span>
+        <strong>${day}</strong>
+      </div>
+      <div class="preview-grid">
+        <div class="preview-item">
+          <i data-lucide="dumbbell"></i>
+          <div><strong>${workout?.split || "Sem treino"}</strong><p>${workout?.exercises?.[0]?.name || "Nenhum exercício planejado"}</p></div>
+        </div>
+        <div class="preview-item">
+          <i data-lucide="activity"></i>
+          <div><strong>${hasRun ? `${run.distance} km` : "Sem corrida"}</strong><p>${run?.title || "Descanso"}</p></div>
+        </div>
+        <div class="preview-item">
+          <i data-lucide="shopping-basket"></i>
+          <div><strong>${hasDiet ? `${Number(diet.calories).toLocaleString("en-US")} kcal` : "Sem dieta"}</strong><p>${diet?.meals?.[0]?.name || "Sem refeição cadastrada"}</p></div>
+        </div>
+        <div class="preview-item">
+          <i data-lucide="sparkles"></i>
+          <div><strong>${plannedHabits.length} hábitos</strong><p>${plannedHabits.slice(0, 3).join(", ") || "Nenhum hábito planejado"}</p></div>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function setText(selector, text) {
@@ -1020,6 +1078,7 @@ function renderDashboard() {
     `${monthNames[visibleCalendarDate.getMonth()]} ${visibleCalendarDate.getFullYear()}`,
   );
   setHTML(".calendar-card .calendar-grid", renderCalendarHTML());
+  setHTML(".calendar-card .calendar-preview", calendarPreviewHTML());
 
   setHTML(".habits-card .habit-table", habitTable());
   const dayIndex = activeDayIndex();
@@ -1071,7 +1130,6 @@ function setupDashboardInteractions() {
     visibleCalendarDate.setMonth(visibleCalendarDate.getMonth() + 1);
     updateDashboard();
   });
-  bindClick(".calendar-card", () => navigateToView("hoje"));
   bindClick(".workout-card .start-btn", () => {
     state.workoutStarted = !state.workoutStarted;
     saveState();
@@ -1107,12 +1165,19 @@ function setupDashboardInteractions() {
       };
     });
 
+  bindCalendarDayEvents();
+}
+
+function bindCalendarDayEvents() {
   document.querySelectorAll(".calendar-grid [data-date]").forEach((day) => {
     day.onclick = (event) => {
       event.stopPropagation();
       selectedCalendarDate = new Date(`${day.dataset.date}T12:00:00`);
       saveState();
-      renderDashboard();
+      setHTML(".calendar-card .calendar-grid", renderCalendarHTML());
+      setHTML(".calendar-card .calendar-preview", calendarPreviewHTML());
+      renderIcons();
+      bindCalendarDayEvents();
     };
   });
 }
@@ -1146,6 +1211,7 @@ function bindMiniCalendarEvents() {
       saveState();
       renderDashboard();
       renderMiniCalendar();
+      picker.hidden = true;
     });
   });
 }
@@ -1222,17 +1288,17 @@ function dayOptions(selected) {
     .join("");
 }
 
-function customDaySelect(label = "Dia") {
+function customDaySelect(label = "Dia", selected = state.activeDay, scope = "active") {
   return `
     <div class="edit-field">
       <span>${label}</span>
-      <div class="custom-select" data-custom-day-select>
+      <div class="custom-select" data-custom-day-select data-scope="${scope}">
         <button class="custom-select-toggle" type="button">
-          <span>${state.activeDay}</span>
+          <span>${selected}</span>
           <i data-lucide="chevron-down"></i>
         </button>
         <div class="custom-select-menu" hidden>
-          ${dayNames.map((day) => `<button class="custom-select-option ${day === state.activeDay ? "active" : ""}" type="button" data-day="${day}">${day}</button>`).join("")}
+          ${dayNames.map((day) => `<button class="custom-select-option ${day === selected ? "active" : ""}" type="button" data-day="${day}">${day}</button>`).join("")}
         </div>
       </div>
     </div>
@@ -1276,37 +1342,34 @@ function renderHoje() {
 }
 
 function renderAcademia() {
+  const selectedWorkoutIndex = state.workouts.findIndex((workout) => workout.day === academyEditDay);
+  const workoutIndex = selectedWorkoutIndex >= 0 ? selectedWorkoutIndex : 0;
+  const workout = state.workouts[workoutIndex];
   return `
     <section class="module-grid">
       <article class="card module-card full">
         <div class="card-title"><h2>Divisões de treino</h2><button class="text-btn" type="button" data-action="add-exercise">Adicionar exercício</button></div>
-        <div class="compact-field">${customDaySelect("Dia ativo no Dashboard")}</div>
-        ${state.workouts
-          .map(
-            (workout, workoutIndex) => `
-              <div class="editor-panel">
-                <div class="editor-row">
-                  <strong>${workout.day}</strong>
-                  <input value="${workout.split}" data-bind="workouts.${workoutIndex}.split" aria-label="Divisão de ${workout.day}">
-                </div>
-                <div class="editable-list">
-                  ${workout.exercises
-                    .map(
-                      (exercise, exerciseIndex) => `
-                        <div class="editable-row">
-                          <input value="${exercise.name}" data-bind="workouts.${workoutIndex}.exercises.${exerciseIndex}.name" aria-label="Nome do exercício">
-                          <input value="${exercise.detail}" data-bind="workouts.${workoutIndex}.exercises.${exerciseIndex}.detail" aria-label="Detalhes do exercício">
-                          <input value="${exercise.load}" data-bind="workouts.${workoutIndex}.exercises.${exerciseIndex}.load" aria-label="Carga">
-                          <button type="button" data-action="remove-exercise" data-workout="${workoutIndex}" data-exercise="${exerciseIndex}" aria-label="Remover exercício"><i data-lucide="trash-2"></i></button>
-                        </div>
-                      `,
-                    )
-                    .join("")}
-                </div>
-              </div>
-            `,
-          )
-          .join("")}
+        <div class="compact-field">${customDaySelect("Dia para editar", academyEditDay, "academy")}</div>
+        <div class="editor-panel">
+          <div class="editor-row">
+            <strong>${workout.day}</strong>
+            <input value="${workout.split}" data-bind="workouts.${workoutIndex}.split" aria-label="Divisão de ${workout.day}">
+          </div>
+          <div class="editable-list">
+            ${workout.exercises
+              .map(
+                (exercise, exerciseIndex) => `
+                  <div class="editable-row">
+                    <input value="${exercise.name}" data-bind="workouts.${workoutIndex}.exercises.${exerciseIndex}.name" aria-label="Nome do exercício">
+                    <input value="${exercise.detail}" data-bind="workouts.${workoutIndex}.exercises.${exerciseIndex}.detail" aria-label="Detalhes do exercício">
+                    <input value="${exercise.load}" data-bind="workouts.${workoutIndex}.exercises.${exerciseIndex}.load" aria-label="Carga">
+                    <button type="button" data-action="remove-exercise" data-workout="${workoutIndex}" data-exercise="${exerciseIndex}" aria-label="Remover exercício"><i data-lucide="trash-2"></i></button>
+                  </div>
+                `,
+              )
+              .join("")}
+          </div>
+        </div>
       </article>
     </section>
   `;
@@ -1455,6 +1518,45 @@ function renderSimplePage(title, body) {
   return `<section class="module-grid"><article class="card module-card full"><div class="card-title"><h2>${title}</h2></div>${body}</article></section>`;
 }
 
+function renderMetas() {
+  const goals = state.goals || "Chegar a 74 kg\nCorrer 50 km/semana\nDormir 7h30";
+  const goalItems = goals
+    .split("\n")
+    .map((goal) => goal.trim())
+    .filter(Boolean);
+
+  return `
+    <section class="module-grid goals-page">
+      <article class="card module-card full">
+        <div class="card-title"><h2>Metas atuais <span>${goalItems.length || 0} ativas</span></h2></div>
+        <div class="goals-layout">
+          <div class="goals-list">
+            ${
+              goalItems.length
+                ? goalItems
+                    .map(
+                      (goal, index) => `
+                        <div class="goal-card">
+                          <span class="goal-badge">Meta ${index + 1}</span>
+                          <strong>${goal}</strong>
+                          <small>Em acompanhamento</small>
+                        </div>
+                      `,
+                    )
+                    .join("")
+                : `<div class="empty-state"><i data-lucide="target"></i><div><strong>Nenhuma meta definida</strong><p>Adicione uma meta no campo ao lado.</p></div></div>`
+            }
+          </div>
+          <label class="edit-field goals-editor">
+            <span>Editar metas</span>
+            <textarea data-bind="goals">${goals}</textarea>
+          </label>
+        </div>
+      </article>
+    </section>
+  `;
+}
+
 const pageRenderers = {
   hoje: renderHoje,
   academia: renderAcademia,
@@ -1467,11 +1569,7 @@ const pageRenderers = {
       "Relatórios",
       `<div class="module-kpis"><div class="module-kpi"><span>Treinos</span><strong>${state.workouts.length}</strong></div><div class="module-kpi"><span>Corrida</span><strong>${state.runs.reduce((sum, run) => sum + moneylessNumber(run.distance), 0).toFixed(1)} km</strong></div><div class="module-kpi"><span>Dia ativo</span><strong>${state.activeDay}</strong></div></div>`,
     ),
-  metas: () =>
-    renderSimplePage(
-      "Metas",
-      `${textAreaField("Metas atuais", state.goals || "Chegar a 74 kg\nCorrer 50 km/semana\nDormir 7h30", `data-bind="goals"`)}`,
-    ),
+  metas: renderMetas,
   anotacoes: renderAnotacoes,
 };
 
@@ -1523,8 +1621,12 @@ function bindEditorEvents(container, rerender) {
 
     select.querySelectorAll(".custom-select-option").forEach((option) => {
       option.addEventListener("click", () => {
-        state.activeDay = option.dataset.day;
-        ensureDiet(state.activeDay);
+        if (select.dataset.scope === "academy") {
+          academyEditDay = option.dataset.day;
+        } else {
+          state.activeDay = option.dataset.day;
+          ensureDiet(state.activeDay);
+        }
         saveState();
         renderDashboard();
         rerender();
@@ -1536,7 +1638,7 @@ function bindEditorEvents(container, rerender) {
     .querySelectorAll("[data-action='add-exercise']")
     .forEach((button) => {
       button.addEventListener("click", () => {
-        byDay(state.workouts).exercises.push({
+        byDay(state.workouts, academyEditDay).exercises.push({
           name: "Novo exercício",
           detail: "3 séries x 10 reps",
           load: "-",
@@ -1745,6 +1847,10 @@ function setupViews() {
   };
 
   menuItems.forEach((item) => {
+    item.addEventListener("pointerdown", () => {
+      menuItems.forEach((link) => link.classList.toggle("active", link === item));
+    });
+
     item.addEventListener("click", (event) => {
       event.preventDefault();
       navigateToView(item.dataset.view);

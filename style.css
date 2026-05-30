@@ -84,6 +84,7 @@ button,
 .sidebar {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
   padding: 24px 16px 22px 20px;
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent 24%),
@@ -179,11 +180,11 @@ button,
 }
 
 .sidebar-spacer {
-  flex: 1;
+  display: none;
 }
 
 .quote-box {
-  margin: 20px 0 18px;
+  margin: auto 0 18px;
   padding: 18px 12px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.03);
@@ -270,7 +271,7 @@ button,
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-top: 168px;
+  margin-top: 20px;
   border: 0;
   background: transparent;
   color: #b9c2ce;
@@ -300,6 +301,14 @@ button,
   height: 14px;
   border-radius: 50%;
   background: #111820;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease;
+}
+
+body.light-mode .theme-toggle b::after {
+  transform: translateX(-16px);
+  background: #ffffff;
 }
 
 .main {
@@ -1138,6 +1147,73 @@ button,
   background: linear-gradient(135deg, #53dc82, #238f57);
 }
 
+.calendar-preview {
+  margin-top: 18px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.preview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.preview-head span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.preview-head strong {
+  color: var(--green);
+  font-size: 13px;
+}
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.preview-item,
+.empty-state {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.preview-item i,
+.empty-state i {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--green);
+  background: rgba(57, 207, 114, 0.12);
+}
+
+.preview-item strong,
+.empty-state strong {
+  display: block;
+  font-size: 12px;
+}
+
+.preview-item p,
+.empty-state p {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
 .date-chip {
   height: 28px;
   padding: 0 9px;
@@ -1239,6 +1315,57 @@ button,
   display: block;
   margin-top: 8px;
   font-size: 26px;
+}
+
+.goals-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.75fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.goals-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.goal-card {
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(57, 207, 114, 0.09), transparent 38%),
+    rgba(255, 255, 255, 0.025);
+}
+
+.goal-badge {
+  width: max-content;
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: var(--green);
+  background: rgba(57, 207, 114, 0.14);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.goal-card strong {
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.goal-card small {
+  margin-top: auto;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.goals-editor textarea {
+  min-height: 184px;
 }
 
 .meal-grid {
@@ -1649,7 +1776,10 @@ body.light-mode {
   --line-strong: rgba(18, 27, 38, 0.16);
   --text: #101820;
   --muted: #657180;
-  background: #edf2f5;
+  --muted-2: #8290a0;
+  background:
+    radial-gradient(circle at 44% -14%, rgba(57, 207, 114, 0.08), transparent 30%),
+    linear-gradient(135deg, #f4f7f9 0%, #edf2f5 100%);
 }
 
 body.light-mode .dashboard-shell,
@@ -1658,7 +1788,75 @@ body.light-mode .main {
 }
 
 body.light-mode .sidebar {
-  background: #101820;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.5), transparent 26%),
+    linear-gradient(180deg, #18222d 0%, #101820 100%);
+}
+
+body.light-mode .stat-card,
+body.light-mode .card,
+body.light-mode .mini-widget,
+body.light-mode .module-kpi,
+body.light-mode .module-item,
+body.light-mode .meal-card,
+body.light-mode .goal-card,
+body.light-mode .empty-state {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(57, 207, 114, 0.08), transparent 30%),
+    linear-gradient(145deg, #ffffff, #f7f9fb);
+  color: var(--text);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 14px 32px rgba(31, 44, 58, 0.08);
+}
+
+body.light-mode .main,
+body.light-mode .topbar,
+body.light-mode .card-title h2,
+body.light-mode .metric-line,
+body.light-mode .habit-summary,
+body.light-mode .habit-table p,
+body.light-mode .exercise-row > span,
+body.light-mode .simple-row {
+  color: var(--text);
+}
+
+body.light-mode .date-btn,
+body.light-mode .date-chip,
+body.light-mode .filter-btn,
+body.light-mode .custom-select-toggle,
+body.light-mode .edit-field input,
+body.light-mode .edit-field textarea,
+body.light-mode .editor-row input,
+body.light-mode .editable-row input,
+body.light-mode .editable-meal input,
+body.light-mode .editable-meal textarea,
+body.light-mode .editable-row button,
+body.light-mode .editable-meal button {
+  background: rgba(255, 255, 255, 0.7) !important;
+  color: var(--text) !important;
+  border-color: rgba(18, 27, 38, 0.12) !important;
+}
+
+body.light-mode .donut::after {
+  background: #ffffff;
+}
+
+body.light-mode .progress-track {
+  background: #d9e2e8;
+}
+
+body.light-mode .bar-chart span.empty,
+body.light-mode .habit-table b.off,
+body.light-mode .check-dot span {
+  background: #d2dde3;
+}
+
+body.light-mode .mini-calendar,
+body.light-mode .custom-select-menu {
+  background: linear-gradient(145deg, #ffffff, #f4f7f9);
+  color: var(--text);
+  border-color: rgba(18, 27, 38, 0.14);
 }
 
 @media (max-width: 1100px) {
@@ -1693,6 +1891,10 @@ body.light-mode .sidebar {
 }
 
 @media (max-width: 760px) {
+  body {
+    min-width: 0;
+  }
+
   .dashboard-shell {
     display: block;
     min-height: auto;
@@ -1703,12 +1905,23 @@ body.light-mode .sidebar {
 
   .sidebar {
     min-height: auto;
+    padding: 18px 14px;
     border-right: 0;
     border-bottom: 1px solid var(--line);
   }
 
   .menu {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .menu a {
+    min-height: 42px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .quote-box {
+    margin-top: 24px;
   }
 
   .theme-toggle {
@@ -1716,7 +1929,9 @@ body.light-mode .sidebar {
   }
 
   .main {
-    padding: 20px 14px;
+    width: 100%;
+    padding: 20px 12px;
+    overflow: hidden;
   }
 
   .topbar {
@@ -1737,25 +1952,121 @@ body.light-mode .sidebar {
   .run-editor,
   .habit-editor {
     grid-template-columns: 1fr;
+    gap: 14px;
   }
 
   .workout-card,
   .calendar-card,
   .habits-card,
   .next-card,
+  .progress-card,
+  .run-card,
+  .nutrition-card,
   .module-card,
   .module-card.wide {
     grid-column: span 1;
   }
 
   .habit-table {
-    grid-template-columns: 1.45fr repeat(7, 1fr);
-    gap: 15px 8px;
+    width: 100%;
+    grid-template-columns: minmax(70px, 1.15fr) repeat(7, minmax(14px, 1fr));
+    gap: 12px 3px;
+    overflow: visible;
+    padding-bottom: 4px;
+  }
+
+  .habit-table p {
+    gap: 4px;
+    font-size: 10px;
+    white-space: normal;
+    line-height: 1.15;
+  }
+
+  .habit-table svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .habit-table b {
+    width: 14px;
+    height: 14px;
+  }
+
+  .habit-table span {
+    font-size: 9px;
+  }
+
+  .calendar-grid {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    column-gap: 4px;
+    row-gap: 12px;
+  }
+
+  .calendar-grid span,
+  .calendar-grid em,
+  .calendar-grid b {
+    width: 100%;
+    height: 30px;
+    justify-self: center;
+    text-align: center;
+  }
+
+  .calendar-grid b.today,
+  .calendar-grid .selected {
+    width: 31px;
+    height: 31px;
+    margin-top: 0;
+  }
+
+  .preview-grid,
+  .goals-layout,
+  .goals-list {
+    grid-template-columns: 1fr;
+  }
+
+  .date-picker-wrap {
+    position: static;
+  }
+
+  .mini-calendar {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    width: min(calc(100vw - 28px), 340px);
+    transform: translate(-50%, -50%);
+    z-index: 80;
+  }
+
+  .mini-calendar::before {
+    content: "";
+    position: fixed;
+    inset: -100vh;
+    z-index: -1;
+    background: rgba(5, 8, 12, 0.55);
+  }
+
+  .bottom-widgets {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 16px;
   }
 
   .mini-widget,
   .mini-widget:first-child,
   .mini-widget:last-child {
+    min-height: 92px;
+    padding: 15px;
     border-radius: 8px;
+  }
+
+  .editable-row,
+  .run-editor {
+    gap: 12px;
+  }
+
+  .card {
+    padding: 16px 14px;
+    overflow: hidden;
   }
 }
